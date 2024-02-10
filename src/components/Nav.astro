@@ -6,7 +6,7 @@ import ThemeToggle from "./ThemeToggle.astro";
 /** Main menu items */
 const textLinks: { label: string; href: string }[] = [
   { label: "Home", href: "/" },
-  { label: "Work", href: "/work/" },
+  // { label: "Work", href: "/work/" },
   { label: "About", href: "/about/" },
 ];
 
@@ -32,7 +32,6 @@ const iconLinks: { label: string; href: string; icon: IconProps["icon"] }[] = [
     <a href="/" class="site-title">
       <!-- <Icon icon="terminal-window" color="var(--accent-regular)" size="1.6em" gradient /> -->
       <Logo class="w-[1.3em]" />
-      Alvin Januar Fandy
     </a>
     <menu-button>
       <template>
@@ -44,8 +43,7 @@ const iconLinks: { label: string; href: string; icon: IconProps["icon"] }[] = [
     </menu-button>
   </div>
   <div id="menu-content">
-    <div></div>
-    <!-- <ul class="nav-items">
+    <ul class="nav-items">
 			{
 				textLinks.map(({ label, href }) => (
 					<li>
@@ -66,7 +64,7 @@ const iconLinks: { label: string; href: string; icon: IconProps["icon"] }[] = [
 					</li>
 				))
 			}
-		</ul> -->
+		</ul>
     <div class="menu-footer">
       <div class="socials">
         {
@@ -198,7 +196,7 @@ const iconLinks: { label: string; href: string; icon: IconProps["icon"] }[] = [
 
   .link {
     display: inline-block;
-    color: var(--gray-300);
+    color: var(--gray-500);
     text-decoration: none;
   }
 
@@ -273,7 +271,7 @@ const iconLinks: { label: string; href: string; icon: IconProps["icon"] }[] = [
       border-radius: 999rem;
       border: 0;
       padding: 0.5rem 0.5625rem;
-      background: radial-gradient(var(--gray-900), var(--gray-800) 150%);
+      background: var(--gradient-accent);
       box-shadow: var(--shadow-md);
     }
 
@@ -295,13 +293,13 @@ const iconLinks: { label: string; href: string; icon: IconProps["icon"] }[] = [
 
     .link:hover,
     .link:focus {
-      color: var(--gray-100);
-      background-color: var(--accent-subtle-overlay);
+      color: var(--accent-text-over);
+      background-color: var(--accent-overlay);
     }
 
     .link.active {
       color: var(--accent-text-over);
-      background-color: var(--accent-regular);
+      background-color: var(--accent-overlay);
     }
 
     .menu-footer {
