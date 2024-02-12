@@ -6,6 +6,14 @@ resource "aws_cloudfront_origin_access_control" "oac" {
   signing_protocol                  = "sigv4"
 }
 
+resource "aws_cloudfront_function" "redirector" {
+  name    = "astro-multi-page-cf-redirector-function"
+  runtime = "cloudfront-js-1.0"
+  comment = "Remap paths to index.html when request origin for multi-page sites"
+  publish = true
+  code    = file("./redirector.js")
+}
+
 resource "aws_cloudfront_distribution" "s3_distribution" {
   origin {
     domain_name              = aws_s3_bucket.bucket.bucket_regional_domain_name
@@ -41,11 +49,29 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
         forward = "none"
       }
     }
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.redirector.arn
+    }
 
     viewer_protocol_policy = "allow-all"
     min_ttl                = 0
     default_ttl            = 3600
     max_ttl                = 86400
+  }
+
+  custom_error_response {
+    error_caching_min_ttl = 10
+    error_code            = 403
+    response_code         = 200
+    response_page_path    = "/index.html"
+  }
+
+  custom_error_response {
+    error_caching_min_ttl = 10
+    error_code            = 404
+    response_code         = 200
+    response_page_path    = "/404.html"
   }
 
   # Cache behavior with precedence 0
