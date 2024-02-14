@@ -89,6 +89,11 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
         forward = "none"
       }
     }
+    
+    function_association {
+      event_type   = "viewer-request"
+      function_arn = aws_cloudfront_function.redirector.arn
+    }
 
     min_ttl                = 0
     default_ttl            = 86400
