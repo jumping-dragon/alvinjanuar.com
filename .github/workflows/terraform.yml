@@ -39,22 +39,16 @@ jobs:
       with:
         terraform_wrapper: false
     # Setup Nodejs
-    - name: Use Node v16
+    - name: Use Node v20
       uses: actions/setup-node@v1
       with:
-        node-version: 16
+        node-version: 20
 
-    # Install dependencies with yarn
-    - name: Run install
-      uses: borales/actions-yarn@v4
-      with:
-        cmd: install
-
-    # Build for production
-    - name: Build production bundle
-      uses: borales/actions-yarn@v4
-      with:
-        cmd: build
+    # Install & Build repo
+    - name: Use Bun to install and build
+      uses: oven-sh/setup-bun@v1
+    - run: bun install
+    - run: bun run build
     
     # Initialize a new or existing Terraform working directory by creating initial files, loading any remote state, downloading modules, etc.
     - name: Terraform Init
