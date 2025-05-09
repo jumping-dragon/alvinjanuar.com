@@ -81,15 +81,9 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     cached_methods   = ["GET", "HEAD", "OPTIONS"]
     target_origin_id = aws_s3_bucket.bucket.id
 
-    forwarded_values {
-      query_string = false
-      headers      = ["Origin"]
+    cache_policy_id = aws_cloudfront_cache_policy.s3_cache_policy.id
+    origin_request_policy_id = aws_cloudfront_origin_request_policy.s3_origin_request_policy.id
 
-      cookies {
-        forward = "none"
-      }
-    }
-    
     function_association {
       event_type   = "viewer-request"
       function_arn = aws_cloudfront_function.redirector.arn
@@ -119,6 +113,48 @@ resource "aws_cloudfront_distribution" "s3_distribution" {
     minimum_protocol_version = "TLSv1.2_2021"
   }
 }
+
+resource "aws_cloudfront_cache_policy" "s3_cache_policy" {
+  name        = "alvinjanuarcom-cache-policy"
+  comment     = "alvinjanuarcom S3 Cache policy"
+  default_ttl = 50
+  max_ttl     = 100
+  min_ttl     = 1
+  parameters_in_cache_key_and_forwarded_to_origin {
+    enable_accept_encoding_gzip = true
+    # enable_accept_encoding_brotli = true
+    cookies_config {
+      cookie_behavior = "none"
+    }
+    headers_config {
+      header_behavior = "whitelist"
+      headers {
+        items = ["Origin", "Authorization"]
+      }
+    }
+    query_strings_config {
+      query_string_behavior = "all"
+    }
+  }
+}
+
+resource "aws_cloudfront_origin_request_policy" "s3_origin_request_policy" {
+  name    = "alvinjanuarcom-origin-request-policy"
+  comment = "alvinjanuarcom S3 Origin Request Policy"
+  cookies_config {
+    cookie_behavior = "none"
+  }
+  headers_config {
+    header_behavior = "whitelist"
+    headers {
+      items = ["Origin"]
+    }
+  }
+  query_strings_config {
+    query_string_behavior = "all"
+  }
+}
+
 
 resource "aws_cloudfront_distribution" "analytics_distribution" {
   # Analytics Origin
@@ -249,6 +285,7 @@ resource "aws_cloudfront_cache_policy" "analytics_cache_policy" {
   max_ttl     = 100
   min_ttl     = 1
   parameters_in_cache_key_and_forwarded_to_origin {
+    enable_accept_encoding_gzip = true
     cookies_config {
       cookie_behavior = "none"
     }
